@@ -5,6 +5,10 @@ import _ from "lodash";
 const debounce =
     _.debounce((func) => func(), 250, {leading: true, trailing: false, maxWait: 250});
 
+/**
+ * this component creates the gui buttons for each control function and also controls the state though idle, stop etc 
+ */
+
 function Controls({state, setState, start, stop, step, stepBack, reset, load, error}) {
     const isErrorState = error.current !== "";
 
@@ -19,6 +23,7 @@ function Controls({state, setState, start, stop, step, stepBack, reset, load, er
                     Stop
                 </button>
                 :
+                // the color of each button is decided directly when they are initialized
                 <button className="btn-operation bg-green-500 hover:bg-green-700"
                     disabled={(state.current !== STATE.IDLE && state.current !== STATE.STOPPED) || isErrorState}
                     onClick={() => {

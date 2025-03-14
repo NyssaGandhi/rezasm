@@ -9,6 +9,12 @@ import Controls from "./Controls.jsx";
 import Editor from "./Editor.jsx";
 import {useSimulator} from "./simulator.ts";
 
+/*
+    This is where the pieces of gui are initialized
+
+    The Code componenet handles the actual usage of the gui buttons created and applys them to the Tauri app
+*/
+
 function Code() {
 
     const {
