@@ -244,3 +244,19 @@ td {
 .save-button:hover {
   background-color: #45a049;
 }
+
+
+.load-button {
+  background-color: #007bff;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 10px;
+}
+
+.file-buttons label:hover {
+  background-color: #0056b3;
+}

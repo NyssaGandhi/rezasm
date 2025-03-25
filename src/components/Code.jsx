@@ -16,7 +16,6 @@ import { useSimulator } from "./simulator.ts";
 */
 
 function Code() {
-    
     const {
         state,
         error,
@@ -42,14 +41,27 @@ function Code() {
 
     // Save file functionality
     const saveFile = () => {
-        const code = setCode;
+        const code = state.code; 
         const blob = new Blob([code], { type: "text/plain" });
         const url = URL.createObjectURL(blob);
         const a = document.createElement("a");
         a.href = url;
-        a.download = "code.txt";
+        a.download = "code.txt"; 
         a.click();
         URL.revokeObjectURL(url);
+    };
+
+    // Load file functionality
+    const loadFile = (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const content = e.target.result;
+                setCode(content); 
+            };
+            reader.readAsText(file);
+        }
     };
 
     return (
@@ -77,10 +89,24 @@ function Code() {
                         />
                     </div>
                 </div>
-                {/* Add Save Button */}
-                <button onClick={saveFile} className="save-button">
-                    Save Code
-                </button>
+                {/* Add Save and Load Buttons */}
+                <div className="file-buttons">
+                    <button onClick={saveFile} className="save-button">
+                        Save Code
+                    </button>
+                    <button className="load-button">
+                        <label>
+                            Load Code
+                            <input
+                                type="file"
+                                accept=".txt"
+                                onChange={loadFile}
+                                className="load-input"
+                                style={{ display: "none" }}
+                            />
+                        </label>
+                    </button>
+                </div>
             </div>
             <Tabs>
                 <Tab label="Console">
