@@ -1,22 +1,22 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import RegistryView from "./RegistryView.jsx";
-import {loadWasm} from "../rust_functions.ts";
-import {Tabs, Tab} from "./Tabs.jsx";
+import { loadWasm } from "../rust_functions.ts";
+import { Tabs, Tab } from "./Tabs.jsx";
 
 import MemoryView from "./MemoryView.jsx";
 import Console from "./Console.jsx";
 import Controls from "./Controls.jsx";
 import Editor from "./Editor.jsx";
-import {useSimulator} from "./simulator.ts";
+import { useSimulator } from "./simulator.ts";
 
 /*
     This is where the pieces of gui are initialized
 
-    The Code componenet handles the actual usage of the gui buttons created and applys them to the Tauri app
+    The Code component handles the actual usage of the gui buttons created and applies them to the Tauri app
 */
 
 function Code() {
-
+    
     const {
         state,
         error,
@@ -40,28 +40,65 @@ function Code() {
             .catch(() => setWasmLoaded(false));
     }, []);
 
+    // Save file functionality
+    const saveFile = () => {
+        const code = setCode;
+        const blob = new Blob([code], { type: "text/plain" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "code.txt";
+        a.click();
+        URL.revokeObjectURL(url);
+    };
+
     return (
         <div>
             <div className="fill px-4">
-                <Controls state={state} setState={setState} start={start} stop={stop} step={step} reset={reset} load={load} error={error} stepBack={stepBack}/>
+                <Controls
+                    state={state}
+                    setState={setState}
+                    start={start}
+                    stop={stop}
+                    step={step}
+                    reset={reset}
+                    load={load}
+                    error={error}
+                    stepBack={stepBack}
+                />
                 <div className="mt-2 mb-2 row codearea">
                     <div className="w-5/6 h-full pe-4">
                         <Editor state={state} setCode={setCode} />
                     </div>
                     <div className="w-1/6">
-                        <RegistryView loaded={wasmLoaded} registerCallback={registerCallback} />
+                        <RegistryView
+                            loaded={wasmLoaded}
+                            registerCallback={registerCallback}
+                        />
                     </div>
                 </div>
+                {/* Add Save Button */}
+                <button onClick={saveFile} className="save-button">
+                    Save Code
+                </button>
             </div>
             <Tabs>
                 <Tab label="Console">
                     <div className="fill" id="tabs_console" data-tab-active>
-                        <Console loaded={wasmLoaded} registerCallback={registerCallback} exitCode={exitCode} error={error} />
+                        <Console
+                            loaded={wasmLoaded}
+                            registerCallback={registerCallback}
+                            exitCode={exitCode}
+                            error={error}
+                        />
                     </div>
                 </Tab>
                 <Tab label="Memory Viewer">
                     <div className="fill" id="tabs_memory">
-                        <MemoryView loaded={wasmLoaded} registerCallback={registerCallback} />
+                        <MemoryView
+                            loaded={wasmLoaded}
+                            registerCallback={registerCallback}
+                        />
                     </div>
                 </Tab>
             </Tabs>
