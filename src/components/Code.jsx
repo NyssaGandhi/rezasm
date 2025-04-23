@@ -51,11 +51,16 @@ function Code() {
             alert("No code to save!");
             return;
         }
+
+        // Get the file name from the input field
+        const fileNameInput = document.getElementById("file-name");
+        const fileName = fileNameInput?.value || "code.txt"; // Default to "code.txt" if no name is provided
+
         const blob = new Blob([code], { type: "text/plain" });
         const url = URL.createObjectURL(blob);
         const a = document.createElement("a");
         a.href = url;
-        a.download = "code.txt";
+        a.download = fileName; // Use the user-provided file name
         a.click();
         URL.revokeObjectURL(url);
     };
@@ -80,7 +85,47 @@ function Code() {
 
     return (
         <div>
-            <div className="fill px-4">
+            {/* File Dropdown and Name Input Container */}
+            <div className="file-controls">
+                <input
+                    type="text"
+                    id="file-name"
+                    placeholder="Enter file name"
+                    className="file-name-input"
+                />
+                <select
+                    className="file-dropdown"
+                    onChange={(e) => {
+                        const selectedOption = e.target.value;
+
+                        if (selectedOption === "save") {
+                            saveFile(); // Trigger save functionality
+                        } else if (selectedOption === "load") {
+                            document.getElementById("file-input").click(); // Trigger file input for load
+                        }
+
+                        // Reset the dropdown to the default option
+                        e.target.value = ""; // Set the value back to the default
+                    }}
+                >
+                    <option value="" disabled selected>
+                        File options
+                    </option>
+                    <option value="save">Save Code</option>
+                    <option value="load">Load Code</option>
+                </select>
+                {/* Hidden file input for loading files */}
+                <input
+                    id="file-input"
+                    type="file"
+                    accept=".txt"
+                    onChange={loadFile}
+                    style={{ display: "none" }}
+                />
+            </div>
+
+            {/* Controls Section */}
+            <div className="top-bar">
                 <Controls
                     state={state}
                     setState={setState}
@@ -92,6 +137,9 @@ function Code() {
                     error={error}
                     stepBack={stepBack}
                 />
+            </div>
+
+            <div className="fill px-4">
                 <div className="mt-2 mb-2 row codearea">
                     <div className="w-5/6 h-full pe-4">
                         {/* Pass the ref to the Editor component */}
@@ -103,24 +151,6 @@ function Code() {
                             registerCallback={registerCallback}
                         />
                     </div>
-                </div>
-                {/* Add Save and Load Buttons */}
-                <div className="file-buttons">
-                    <button onClick={saveFile} className="save-button">
-                        Save Code
-                    </button>
-                    <button className="load-button">
-                        <label>
-                            Load Code
-                            <input
-                                type="file"
-                                accept=".txt"
-                                onChange={loadFile}
-                                className="load-input"
-                                style={{ display: "none" }}
-                            />
-                        </label>
-                    </button>
                 </div>
             </div>
             <Tabs>
