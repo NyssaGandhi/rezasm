@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import RegistryView from "./RegistryView.jsx";
 import { loadWasm } from "../rust_functions.ts";
 import { Tabs, Tab } from "./Tabs.jsx";
@@ -8,6 +8,8 @@ import Console from "./Console.jsx";
 import Controls from "./Controls.jsx";
 import Editor from "./Editor.jsx";
 import { useSimulator } from "./simulator.ts";
+// import { saveFile, loadFile } from "./SaveLoad.jsx";
+
 
 /*
     This is where the pieces of gui are initialized
@@ -33,6 +35,9 @@ function Code() {
     } = useSimulator();
     const [wasmLoaded, setWasmLoaded] = useState(false);
 
+    // Create a ref to access the textarea in the Editor component
+    const editorRef = useRef(null);
+
     useEffect(() => {
         loadWasm()
             .then((loaded) => setWasmLoaded(loaded))
@@ -41,12 +46,16 @@ function Code() {
 
     // Save file functionality
     const saveFile = () => {
-        const code = state.code; 
+        const code = editorRef.current?.value; // Access the textarea value using the ref
+        if (!code) {
+            alert("No code to save!");
+            return;
+        }
         const blob = new Blob([code], { type: "text/plain" });
         const url = URL.createObjectURL(blob);
         const a = document.createElement("a");
         a.href = url;
-        a.download = "code.txt"; 
+        a.download = "code.txt";
         a.click();
         URL.revokeObjectURL(url);
     };
@@ -54,14 +63,19 @@ function Code() {
     // Load file functionality
     const loadFile = (event) => {
         const file = event.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                const content = e.target.result;
-                setCode(content); 
-            };
-            reader.readAsText(file);
+        if (!file) {
+            alert("No file selected!");
+            return;
         }
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const content = e.target.result;
+            if (editorRef.current) {
+                editorRef.current.value = content; // Set the textarea value using the ref
+                setCode(content); // Update the code in the simulator state
+            }
+        };
+        reader.readAsText(file);
     };
 
     return (
@@ -80,7 +94,8 @@ function Code() {
                 />
                 <div className="mt-2 mb-2 row codearea">
                     <div className="w-5/6 h-full pe-4">
-                        <Editor state={state} setCode={setCode} />
+                        {/* Pass the ref to the Editor component */}
+                        <Editor state={state} setCode={setCode} editorRef={editorRef} />
                     </div>
                     <div className="w-1/6">
                         <RegistryView
