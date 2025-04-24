@@ -20,6 +20,26 @@ function Editor({ state, setCode, editorRef }) {
         setCode(textarea.value);
     };
 
+    const handleKeyDown = (e) => {
+        if (e.key === "Tab") {
+            e.preventDefault(); // Prevent the default tab behavior (moving focus)
+
+            const textarea = e.target;
+            const start = textarea.selectionStart;
+            const end = textarea.selectionEnd;
+
+            // Insert a tab character at the cursor position
+            const value = textarea.value;
+            textarea.value = value.substring(0, start) + "\t" + value.substring(end);
+
+            // Move the cursor after the inserted tab
+            textarea.selectionStart = textarea.selectionEnd = start + 1;
+
+            // Trigger the change event to update the line numbers and parent state
+            updateLineNumbers({ target: textarea });
+        }
+    };
+
     useEffect(() => {
         // Initialize line numbers when the component mounts
         const initialLines = editorRef.current?.value.split("\n").length || 1;
@@ -42,6 +62,7 @@ function Editor({ state, setCode, editorRef }) {
                     ref={editorRef} // Attach the ref to the textarea
                     disabled={state.current !== STATE.IDLE && state.current !== STATE.STOPPED}
                     onChange={updateLineNumbers}
+                    onKeyDown={handleKeyDown} // Handle the Tab key
                     placeholder="Enter some ezasm code..."
                     className="editor-textarea"
                 />
