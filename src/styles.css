@@ -328,3 +328,45 @@ td {
     background-color: #f9f9f9; /* Optional: Add a background color */
     border-bottom: 1px solid #ccc; /* Optional: Add a bottom border */
 }
+
+.editor-container {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    overflow: hidden;
+    background-color: #f9f9f9;
+}
+
+.editor-scrollable {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    overflow-y: auto; /* Single scrollbar for the container */
+}
+
+.line-numbers {
+    background-color: #eaeaea;
+    color: #333;
+    padding: 10px;
+    text-align: right;
+    font-family: monospace;
+    font-size: 14px;
+    line-height: 1.5;
+    user-select: none;
+    border-right: 1px solid #ccc;
+    flex-shrink: 0; /* Prevent shrinking */
+}
+
+.editor-textarea {
+    flex: 1;
+    padding: 10px;
+    font-family: monospace;
+    font-size: 14px;
+    line-height: 1.5;
+    border: none;
+    outline: none;
+    resize: none; /* Disable manual resizing */
+    overflow: hidden; /* Prevent scrollbars inside the textarea */
+}
