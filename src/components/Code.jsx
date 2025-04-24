@@ -138,8 +138,9 @@ function Code() {
                     stepBack={stepBack}
                 />
             </div>
-
-            <div className="fill px-4">
+            
+            
+            <div className="fill px-4"> {/* initialize the editor */}
                 <div className="mt-2 mb-2 row codearea">
                     <div className="w-5/6 h-full pe-4">
                         {/* Pass the ref to the Editor component */}
